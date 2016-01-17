@@ -1,12 +1,14 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import beans.vocabulary.VocabularyWordContainer;
 import beans.vocabulary.Word;
 import beans.vocabulary.WordGroup;
 import repository.VocabularyRepositoryEx;
@@ -38,14 +40,21 @@ public class VocabolaryControllerEx {
 
 	@CrossOrigin
 
-	@RequestMapping("/getWordsEx")
-	public WordGroup getLastWordGroup(@RequestParam(value = "groupName", defaultValue = "WeekDays") String groupName) {
-		WordGroup lastWordGroup = null;
+	@RequestMapping("/getWordGroupNameList")
+	public List<String> getLastWordGroup() {
+		List<String> wordGroupNameList = new ArrayList<String>();
 		for (WordGroup wordGroup : repository.findAll()) {
-			System.out.println(wordGroup.getGroupName());
-			lastWordGroup = wordGroup;
+			wordGroupNameList.add(wordGroup.getGroupName());
 		}
-			return lastWordGroup;
+		return wordGroupNameList;
+	}
+
+	@RequestMapping("/getWordsExByName")
+	public WordGroup getWordGroup(@RequestParam(value = "groupName", defaultValue = "WeekDays") String groupName) {
+		WordGroup wordGroup = repository.findByGroupName(groupName);
+		//System.out.println(wordGroup.getGroupName());
+
+		return wordGroup;
 
 	}
 
