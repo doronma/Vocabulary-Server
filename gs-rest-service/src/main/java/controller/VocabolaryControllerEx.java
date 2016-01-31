@@ -37,7 +37,7 @@ public class VocabolaryControllerEx {
 		WordGroup wordGroup2 = new WordGroup("Animals");
 		wordGroup2.addWord(new Word("frog", "צפרדע"));
 		wordGroup2.addWord(new Word("pig", "חזיר"));
-		wordGroup2.addWord(new Word("duck", "ברבז"));
+		wordGroup2.addWord(new Word("duck", "ברוז"));
 		wordGroup2.addWord(new Word("dog", "כלב"));
 		wordGroup2.addWord(new Word("spider", "עכביש"));
 		wordGroup2.addWord(new Word("fish", "דג"));
@@ -47,6 +47,7 @@ public class VocabolaryControllerEx {
 		wordGroup2.addWord(new Word("tree", "עץ"));
 		repository.save(wordGroup1);
 		repository.save(wordGroup2);
+	
 		for (WordGroup wordGroup : repository.findAll()) {
 			System.out.println(wordGroup);
 		}
@@ -76,10 +77,14 @@ public class VocabolaryControllerEx {
 	}
 	
 	
-	@RequestMapping(value="/sendWords",method = RequestMethod.POST)
-	public Message sendwords (@RequestBody WordGroup wordGroup){
-		System.out.println("in sendWords");
+	@RequestMapping(value="/addWordGroup",method = RequestMethod.POST)
+	public Message addWordGroup (@RequestBody WordGroup wordGroup){
+		
 		System.out.println(wordGroup);
+		WordGroup newWordGroup = new WordGroup();
+		newWordGroup.setGroupName(wordGroup.getGroupName());
+		newWordGroup.setWordList(wordGroup.getWordList());
+		repository.save(newWordGroup);
 		Message message = new Message();
 		message.setMsg("All is Good");
 		return message;
