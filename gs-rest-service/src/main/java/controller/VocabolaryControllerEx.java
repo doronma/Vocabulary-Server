@@ -81,10 +81,7 @@ public class VocabolaryControllerEx {
 	public Message addWordGroup (@RequestBody WordGroup wordGroup){
 		
 		System.out.println(wordGroup);
-		WordGroup newWordGroup = new WordGroup();
-		newWordGroup.setGroupName(wordGroup.getGroupName());
-		newWordGroup.setWordList(wordGroup.getWordList());
-		repository.save(newWordGroup);
+		repository.save(wordGroup);
 		Message message = new Message();
 		message.setMsg("All is Good");
 		return message;
