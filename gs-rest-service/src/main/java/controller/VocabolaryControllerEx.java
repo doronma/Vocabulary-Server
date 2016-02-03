@@ -26,6 +26,12 @@ public class VocabolaryControllerEx {
 	@RequestMapping("/addWordsEx")
 	public String addWords() {
 		repository.deleteAll();
+		WordGroup weekDaysWordGroup = getWeekDaysWordGroup();
+		repository.save(weekDaysWordGroup);
+		return "ok";
+	}
+
+	private WordGroup getWeekDaysWordGroup() {
 		WordGroup wordGroup1 = new WordGroup("WeekDays");
 		wordGroup1.addWord(new Word("Sunday", "יום ראשון"));
 		wordGroup1.addWord(new Word("Monday", "יום שני"));
@@ -34,26 +40,7 @@ public class VocabolaryControllerEx {
 		wordGroup1.addWord(new Word("Thursday", "יום חמישי"));
 		wordGroup1.addWord(new Word("Friday", "יום שישי"));
 		wordGroup1.addWord(new Word("Saturday", "יום שבת"));
-		WordGroup wordGroup2 = new WordGroup("Animals");
-		wordGroup2.addWord(new Word("frog", "צפרדע"));
-		wordGroup2.addWord(new Word("pig", "חזיר"));
-		wordGroup2.addWord(new Word("duck", "ברוז"));
-		wordGroup2.addWord(new Word("dog", "כלב"));
-		wordGroup2.addWord(new Word("spider", "עכביש"));
-		wordGroup2.addWord(new Word("fish", "דג"));
-		wordGroup2.addWord(new Word("bee", "דבורה"));
-		wordGroup2.addWord(new Word("bear", "דב"));
-		wordGroup2.addWord(new Word("rose", "שושנה"));
-		wordGroup2.addWord(new Word("tree", "עץ"));
-		repository.save(wordGroup1);
-		repository.save(wordGroup2);
-	
-		for (WordGroup wordGroup : repository.findAll()) {
-			System.out.println(wordGroup);
-		}
-
-		return "ok";
-
+		return wordGroup1;
 	}
 
 	@CrossOrigin
@@ -63,6 +50,7 @@ public class VocabolaryControllerEx {
 		for (WordGroup wordGroup : repository.findAll()) {
 			wordGroupNameList.add(wordGroup.getGroupName());
 		}
+		System.out.println("Getting word list - " + wordGroupNameList);
 		return wordGroupNameList;
 	}
 
@@ -82,6 +70,32 @@ public class VocabolaryControllerEx {
 		
 		System.out.println(wordGroup);
 		repository.save(wordGroup);
+		Message message = new Message();
+		message.setMsg("All is Good");
+		return message;
+	}
+	
+	@RequestMapping(value="/editWordGroup",method = RequestMethod.POST)
+	public Message editWordGroup (@RequestBody WordGroup editedWordGroup){
+		Message message = new Message();
+		WordGroup wordGroup = repository.findByGroupName(editedWordGroup.getGroupName());
+		if (wordGroup==null){
+			message.setMsg("Word Group was not found");
+		}else{
+				wordGroup.setWordList(editedWordGroup.getWordList());
+				repository.save(wordGroup);
+				message.setMsg("All is Good");
+			}
+		
+		return message;
+	}
+	
+	@RequestMapping(value="/deleteWordGroup",method = RequestMethod.POST)
+	public Message deleteWordGroup (@RequestBody String groupName){
+		
+		System.out.println("deleting - " + groupName);
+		WordGroup wordGroup = repository.findByGroupName(groupName);
+		repository.delete(wordGroup);
 		Message message = new Message();
 		message.setMsg("All is Good");
 		return message;
